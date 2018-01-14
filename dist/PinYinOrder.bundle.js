@@ -160,6 +160,8 @@ var PinYinOrder = function () {
     return PinYinOrder;
 }();
 
+window.PinYinOrder = PinYinOrder;
+
 module.exports = PinYinOrder;
 
 /***/ }),

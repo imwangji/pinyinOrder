@@ -80,4 +80,8 @@ class PinYinOrder {
 }
 
 
+window.PinYinOrder=PinYinOrder;
+
+
+
 module.exports=PinYinOrder;
