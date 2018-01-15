@@ -104,5 +104,28 @@ describe('测试拼音排序', () => {
         });
     });
 
+    describe('比较两个单词', () => {
+        it('英文单词始终小于汉字单词', () => {
+            expect(piyinOrder.compareWord("资源","资南")).toBe(1);
+            expect(piyinOrder.compareWord("招商","资源")).toBe(-1);
+            expect(piyinOrder.compareWord("a","资源")).toBe(-1);
+            expect(piyinOrder.compareWord("资源池","资源")).toBe(1);
+            expect(piyinOrder.compareWord("资源池","资源啊")).toBe(1);
+            expect(piyinOrder.compareWord("admin","Dashboard")).toBe(-1);
 
+        });
+    });
+
+    describe('sort方法将数组排序', () => {
+        it('混合排序一下试试', () => {
+            let arr = ["曹珊","曹珊珊","资源池","资源查看","Dashbord","admin"];
+            piyinOrder.sort(arr);
+            expect(arr[0]).toBe("admin");
+            expect(arr[1]).toBe("Dashbord");
+            expect(arr[2]).toBe("曹珊");
+            expect(arr[3]).toBe("曹珊珊");
+            expect(arr[4]).toBe("资源池");
+            expect(arr[5]).toBe("资源查看");
+        });
+    });
 });

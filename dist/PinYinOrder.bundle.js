@@ -92,6 +92,25 @@ function _exchange(array, a, b) {
     array[a] = array[b];
     array[b] = c;
 }
+/**
+ * 将一个string倒转
+ * hello->olleh
+ */
+function _reverse(string) {
+    var arr = string.split("");
+    arr.reverse();
+    return arr.join("");
+}
+
+function _compareCharCode(a, b) {
+    if (a.charCodeAt(0) > b.charCodeAt[0]) {
+        return 1;
+    } else if (a.charCodeAt(0) < b.charCodeAt[0]) {
+        return -1;
+    } else {
+        return 0;
+    }
+}
 
 var PinYinOrder = function () {
     function PinYinOrder() {
@@ -109,15 +128,53 @@ var PinYinOrder = function () {
             for (var i = 0; i < array.length; i++) {
                 var k = i;
                 for (var j = i; j < array.length; j++) {
-                    if (this.compareInPinYin(array[j], array[k]) < 0) {
+                    if (this.compareWord(array[j], array[k]) < 0) {
                         k = j;
-                    } else if (this.compareInPinYin(array[j], array[k]) == 0) {
-                        k = array[j].charCodeAt(0) < array[k].charCodeAt(0) ? j : k;
                     }
                 }
                 _exchange(array, i, k);
             }
             return array;
+        }
+    }, {
+        key: "compareWord",
+        value: function compareWord(word1, word2) {
+            /**
+             * @description
+             * 根据拼音排序，比较两个单词，与compareInPinYin不同的是，本方法比较的是整个单词
+             * 把单词的每一个字的首字母拿出来进行比对，同音的情况，两个字的小于三个字
+             * @returns
+             * 如果word1排在word12前面，返回-1，反之返回1，相等返回0
+             * @example
+             * 曹山===曹珊===曹水（都是C,S）
+             * 曹山<曹山山（两个字的小于三个字的）
+             */
+            var weightOfWord1 = 1;
+            var weightOfWord2 = 1;
+            var i = word1.length > word2.length ? word1.length : word2.length;
+            for (var j = 0; j < i; j++) {
+                if (!word1[j]) {
+                    weightOfWord2 += weightOfWord2 * (10 * (i - j));
+                    break;
+                }
+                if (!word2[j]) {
+                    weightOfWord1 += weightOfWord1 * (10 * (i - j));
+                    break;
+                }
+                if (this.compareInPinYin(word1[j], word2[j]) > 0) {
+                    weightOfWord1 += weightOfWord1 * (10 * (i - j));
+                } else if (this.compareInPinYin(word1[j], word2[j]) < 0) {
+                    weightOfWord2 += weightOfWord2 * (10 * (i - j));
+                }
+            }
+
+            if (weightOfWord1 > weightOfWord2) {
+                return 1;
+            } else if (weightOfWord1 < weightOfWord2) {
+                return -1;
+            } else {
+                return 0;
+            }
         }
     }, {
         key: "compareInPinYin",
@@ -131,14 +188,18 @@ var PinYinOrder = function () {
              * 如果charactor1排在charactor2前面，返回-1，反之返回1，相等返回0
              */
 
-            var sourceCharactor = this.getCharactorFirstPinYinWorld(charactor1);
-            var targetCharactor = this.getCharactorFirstPinYinWorld(charactor2);
+            var sourceCharactorPinyin = this.getCharactorFirstPinYinWorld(charactor1);
+            var targetCharactorPinyin = this.getCharactorFirstPinYinWorld(charactor2);
 
-            if (sourceCharactor && targetCharactor) {
-                return _compareCharactor(sourceCharactor, targetCharactor);
-            } else if (!sourceCharactor && targetCharactor) {
+            if (sourceCharactorPinyin && targetCharactorPinyin) {
+                var pinyinCompareResult = _compareCharactor(sourceCharactorPinyin, targetCharactorPinyin);
+                if (pinyinCompareResult == 0) {
+                    return _compareCharCode(charactor1, charactor2);
+                }
+                return pinyinCompareResult;
+            } else if (!sourceCharactorPinyin && targetCharactorPinyin) {
                 return 1;
-            } else if (sourceCharactor && !targetCharactor) {
+            } else if (sourceCharactorPinyin && !targetCharactorPinyin) {
                 return -1;
             } else {
                 return 0;
@@ -190,7 +251,7 @@ var PinYinOrder = function () {
     return PinYinOrder;
 }();
 
-if (window) {
+if (typeof window != 'undefined') {
     window.PinYinOrder = PinYinOrder;
 }
 
@@ -204,7 +265,7 @@ module.exports = PinYinOrder;
 
 
 module.exports = {
-  "a": "哎哀唉埃挨锿捱皑癌嗳矮蔼霭艾爱砹隘嗌嫒碍暧瑷僾薆安桉氨庵谙腤鹌鞍鮟盫啽垵俺唵埯铵揞犴岸按案胺暗黯肮昂枊盎醠凹坳垇爊敖嗷嶅廒獒遨熬璈翱聱螯謷鳌鏖芺袄媪岙傲奡奥骜澳懊鏊",
+  "a": "啊阿吖嗄哎哀唉埃挨锿捱皑癌嗳矮蔼霭艾爱砹隘嗌嫒碍暧瑷僾薆安桉氨庵谙腤鹌鞍鮟盫啽垵俺唵埯铵揞犴岸按案胺暗黯肮昂枊盎醠凹坳垇爊敖嗷嶅廒獒遨熬璈翱聱螯謷鳌鏖芺袄媪岙傲奡奥骜澳懊鏊",
   "b": "八巴叭扒朳吧夿岜芭疤捌笆粑豝鲃拔茇胈菝跋魃把靶坝弝爸罢鲅霸灞掰白百佰柏栢捭摆呗败拜稗扳攽班般颁斑搬斒瘢癍阪坂板版钣舨蝂魬办半伴扮姅拌绊瓣邦帮梆浜绑榜膀蚌傍棒谤塝稖蒡磅镑勹包孢苞胞煲龅褒雹宝饱保鸨堡葆褓报抱豹趵菢鲍暴虣爆陂卑杯悲碑鹎北贝狈邶备背钡倍悖被偝惫焙辈碚蓓褙骳糒鞴鐾奔贲倴锛本苯畚坌笨伻崩绷嘣甭菶琫泵迸甏镚蹦屄逼鲾柲荸鼻匕比佊吡妣沘彼秕俾笔舭鄙币必毕闭庇诐邲畀哔毖珌荜陛毙狴铋婢庳敝梐萆堛弼愊愎皕筚赑滗煏痹腷蓖裨跸閟弊碧箅蔽馝駜髲壁嬖篦薜觱避鮅濞臂髀奰璧饆襞襣躄鷩边砭笾编煸箯蝙鳊鞭贬扁窆匾惼碥稨褊藊卞弁忭抃汳汴苄便变昪揙缏遍艑辨辩辫彪标飑猋幖滮骠熛膘瘭镖飙飚瀌镳表婊裱褾檦俵鳔憋鳖别蹩瘪邠宾彬傧斌滨缤槟镔濒豳蠙摈殡膑髌鬓冰兵栟丙邴秉柄炳饼蛃禀并幷病摒拨波玻剥袯钵饽啵脖菠嶓播伯孛驳帛泊瓝勃亳浡钹铂舶博渤葧鹁搏馎鲌僰箔膊踣镈薄襮礴跛簸擘檗峬庯逋钸晡餔醭卜卟补哺捕不布步怖钚部埠瓿蔀篰簿玢夯疒瀑",
   "c": "嚓擦礤猜才材财裁采彩睬綵踩菜蔡縩参骖餐残蚕惭惨憯黪黲灿粲璨仓伧沧苍舱藏鑶操糙曹嘈漕槽艚螬草册侧厕恻测敇策箣岑梣涔噌层蹭叉杈臿嗏插馇锸艖垞查茬茶嵖搽猹槎察碴檫衩镲汊岔侘诧姹差拆钗侪柴豺虿瘥觇掺搀幨婵谗孱禅馋缠蝉鋋廛潺镡瀍蟾巉躔镵产刬浐谄铲阐蒇冁繟忏颤羼韂伥昌娼猖菖阊琩鲳肠苌尝偿常徜嫦鲿厂场昶惝敞氅鋹怅玚畅倡鬯唱暢韔抄弨怊钞焯超晁巢朝嘲潮吵炒眧麨耖车砗唓扯彻坼掣撤澈抻郴琛嗔尘臣忱沉辰陈宸晨谌趻碜墋踸闯衬疢称龀趁榇谶柽偁蛏铛牚琤赪撑瞠丞成呈承枨诚郕城宬乘埕脭铖惩程裎塍酲澄橙逞骋秤吃哧蚩鸱瓻眵笞嗤媸摛痴螭魑弛池驰迟茌持墀踟篪尺侈齿耻豉褫彳叱斥赤饬抶炽翅敕啻傺憏瘛充冲忡茺翀舂憃憧艟虫崇宠铳抽瘳篘犨仇俦帱惆绸畴愁稠筹酬踌懤雠丑瞅臭殠出初摴樗刍除厨滁锄蜍雏橱幮躇蹰杵础储楮楚褚齼亍处怵绌琡搐触憷歜黜矗搋膗揣啜嘬踹巛川氚穿传舡船遄椽歂舛荈喘僢串钏囱疮窗摐床噇创怆吹炊垂陲捶菙棰槌锤春堾椿蝽鰆纯唇莼淳鹑漘醇踳蠢踔戳辵娖绰逴辍龊歠呲玼疵词祠茈茨瓷慈辞磁雌鹚糍此佌次佽刺赐从匆苁枞葱骢璁聪丛淙琮凑楱腠辏粗徂殂促猝蔟醋簇蹙蹴汆撺镩蹿窜篡爨崔催摧榱璀脆啐悴淬萃毳瘁粹翠村皴存忖寸搓磋撮蹉嵯痤矬鹾脞厝挫措锉错刹畜曾膪澶骣粢",
   "d": "襜裯篅錞哒耷搭嗒褡达妲怛笪答瘩靼鞑打大呆歹傣代岱甙绐迨带待怠殆玳贷埭袋逮戴黛丹单担眈耽郸聃殚瘅箪儋胆疸紞掸旦但诞啖弹惮淡萏蛋氮澹当裆挡党谠凼宕砀荡档菪刀叨忉氘导岛倒捣祷蹈到悼盗道稻纛得锝德的灯登噔簦蹬等戥邓凳嶝瞪磴镫低羝堤嘀滴镝鞮狄籴迪敌涤荻笛觌嫡氐诋邸坻底抵柢砥骶地弟玓帝娣递第谛棣睇缔蒂碲嗲掂滇颠巅癫典点碘踮电佃甸阽坫店垫玷钿惦淀奠殿癜簟刁叼凋貂碉雕鲷吊钓掉铞爹跌迭垤瓞谍堞揲耋叠牒碟蝶蹀鲽丁仃叮玎疔盯钉耵酊顶鼎订定啶腚碇锭丢铥东冬咚岽鸫董懂蕫动冻侗垌峒恫栋洞胨胴硐都兜蔸篼斗抖陡蚪豆郖逗痘窦嘟督毒读渎椟牍犊黩髑独笃堵赌睹芏妒杜肚度渡镀蠹端短段断缎椴煅锻簖堆队对兑祋怼碓憝镦吨惇敦墩礅蹲盹趸沌炖盾砘钝顿遁多咄哆裰夺铎掇敚踱朵哚垛缍躲剁沲堕舵惰跺赕铫町铤",

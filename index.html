@@ -10,7 +10,10 @@
     <script src="dist/PinYinOrder.bundle.js"></script>
     <script>
         var pinyin = new PinYinOrder();
-        console.log(pinyin.compareInPinYin("你","爱"));
+        arr = ["曹珊","曹珊珊","资源池","资源查看","资源山","Dashbord","admin"];
+        pinyin.sort(arr);
+        
+        console.log(arr);
     </script>
 </body>
 </html>
