@@ -112,6 +112,7 @@ describe('测试拼音排序', () => {
             expect(piyinOrder.compareWord("资源池","资源")).toBe(1);
             expect(piyinOrder.compareWord("资源池","资源啊")).toBe(1);
             expect(piyinOrder.compareWord("admin","Dashboard")).toBe(-1);
+            expect(piyinOrder.compareWord("系统管理员","末位资源筛选")).toBe(1);
 
         });
     });
@@ -126,6 +127,12 @@ describe('测试拼音排序', () => {
             expect(arr[3]).toBe("曹珊珊");
             expect(arr[4]).toBe("资源池");
             expect(arr[5]).toBe("资源查看");
+        });
+        it('混合排序一下试试', () => {
+            let arr = ["系统管理员","末位资源筛选"];
+            piyinOrder.sort(arr);
+            expect(arr[0]).toBe("末位资源筛选");
+            expect(arr[1]).toBe("系统管理员");
         });
     });
 });

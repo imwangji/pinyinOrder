@@ -75,17 +75,17 @@ class PinYinOrder {
         let i = word1.length > word2.length ? word1.length : word2.length;
         for (let j = 0; j < i; j++) {
             if (!word1[j]) {
-                weightOfWord2+=weightOfWord2*(10*(i-j))
+                weightOfWord2+=weightOfWord2+Math.pow(10,(i-j))
                 break;
             }
             if (!word2[j]){
-                weightOfWord1+=weightOfWord1*(10*(i-j))
+                weightOfWord1+=weightOfWord1+Math.pow(10,(i-j))
                 break;
             }
             if (this.compareInPinYin(word1[j], word2[j]) > 0) {
-                weightOfWord1+=weightOfWord1*(10*(i-j))
+                weightOfWord1+=weightOfWord1+Math.pow(10,(i-j))
             } else if (this.compareInPinYin(word1[j], word2[j]) < 0) {
-                weightOfWord2+=weightOfWord2*(10*(i-j))
+                weightOfWord2+=weightOfWord2+Math.pow(10,(i-j))
             }
         }
 
