@@ -83,6 +83,15 @@ function _compareCharactor(charactor1, charactor2) {
         return charactor1 < charactor2 ? -1 : 1;
     }
 }
+/**
+ * a,b是数组下标
+ * 将array[a]与array[b]交换
+ */
+function _exchange(array, a, b) {
+    var c = array[a];
+    array[a] = array[b];
+    array[b] = c;
+}
 
 var PinYinOrder = function () {
     function PinYinOrder() {
@@ -90,6 +99,25 @@ var PinYinOrder = function () {
     }
 
     _createClass(PinYinOrder, [{
+        key: "sort",
+        value: function sort(array) {
+            /**
+             * 将给定的数组进行元素排序
+             * 注意：不会产生新的数组，会在原数组上排序
+             * @returns sortedArray
+             */
+            for (var i = 0; i < array.length; i++) {
+                var k = i;
+                for (var j = i; j < array.length; j++) {
+                    if (this.compareInPinYin(array[j], array[k]) < 0) {
+                        k = j;
+                    }
+                }
+                _exchange(array, i, k);
+            }
+            return array;
+        }
+    }, {
         key: "compareInPinYin",
         value: function compareInPinYin(charactor1, charactor2) {
             /**
@@ -160,7 +188,9 @@ var PinYinOrder = function () {
     return PinYinOrder;
 }();
 
-window.PinYinOrder = PinYinOrder;
+if (window) {
+    window.PinYinOrder = PinYinOrder;
+}
 
 module.exports = PinYinOrder;
 
