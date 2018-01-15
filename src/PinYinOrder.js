@@ -34,6 +34,8 @@ class PinYinOrder {
             for(var j=i;j<array.length;j++){
                 if(this.compareInPinYin(array[j],array[k])<0){
                     k=j;
+                }else if(this.compareInPinYin(array[j],array[k])==0){
+                    k=array[j].charCodeAt(0)<array[k].charCodeAt(0)?j:k;
                 }
             }
             _exchange(array,i,k);
