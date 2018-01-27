@@ -134,5 +134,11 @@ describe('测试拼音排序', () => {
             expect(arr[0]).toBe("末位资源筛选");
             expect(arr[1]).toBe("系统管理员");
         });
+        it('发现Bug:末排在了投的后面', () => {
+            let arr = ["投标明细查看","末位资源筛选"];
+            pinyinOrder.sort(arr);
+            expect(arr[0]).toBe("末位资源筛选");
+            expect(arr[1]).toBe("投标");
+        });
     });
 });

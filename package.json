@@ -1,6 +1,6 @@
 {
   "name": "pinyin-order",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "按照拼音首字母排序的js库",
   "main": "index.js",
   "scripts": {

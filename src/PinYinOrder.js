@@ -70,22 +70,28 @@ class PinYinOrder {
          * 曹山===曹珊===曹水（都是C,S）
          * 曹山<曹山山（两个字的小于三个字的）
          */
+        let weightMagicNumber=100;//权重值
         let weightOfWord1 = 1;
         let weightOfWord2 = 1;
         let i = word1.length > word2.length ? word1.length : word2.length;
+        let returnValueBetweenFirstCharactor = this.compareInPinYin(word1[0], word2[0]);
+        if(returnValueBetweenFirstCharactor!=0){
+            //如果第一个字不相等，则直接返回结果
+            return returnValueBetweenFirstCharactor;
+        }
         for (let j = 0; j < i; j++) {
             if (!word1[j]) {
-                weightOfWord2+=weightOfWord2+Math.pow(10,(i-j))
+                weightOfWord2+=weightOfWord2+Math.pow(weightMagicNumber,(i-j))
                 break;
             }
             if (!word2[j]){
-                weightOfWord1+=weightOfWord1+Math.pow(10,(i-j))
+                weightOfWord1+=weightOfWord1+Math.pow(weightMagicNumber,(i-j))
                 break;
             }
             if (this.compareInPinYin(word1[j], word2[j]) > 0) {
-                weightOfWord1+=weightOfWord1+Math.pow(10,(i-j))
+                weightOfWord1+=weightOfWord1+Math.pow(weightMagicNumber,(i-j))
             } else if (this.compareInPinYin(word1[j], word2[j]) < 0) {
-                weightOfWord2+=weightOfWord2+Math.pow(10,(i-j))
+                weightOfWord2+=weightOfWord2+Math.pow(weightMagicNumber,(i-j))
             }
         }
 
