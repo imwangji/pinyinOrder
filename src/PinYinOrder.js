@@ -28,9 +28,9 @@ function _reverse(string) {
 }
 
 function _compareCharCode(a,b){
-    if(a.charCodeAt(0)>b.charCodeAt[0]){
+    if(a.charCodeAt(0)>b.charCodeAt(0)){
         return 1;
-    }else if(a.charCodeAt(0)<b.charCodeAt[0]){
+    }else if(a.charCodeAt(0)<b.charCodeAt(0)){
         return -1;
     }else{
         return 0;
