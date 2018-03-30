@@ -70,6 +70,18 @@ class PinYinOrder {
          * 曹山===曹珊===曹水（都是C,S）
          * 曹山<曹山山（两个字的小于三个字的）
          */
+        if(!word1){
+            return 1
+        }
+
+        if(!word2){
+            return -1;
+        }
+
+        if(!word1&&!word2){
+            return 0;
+        }
+
         let weightMagicNumber=100;//权重值
         let weightOfWord1 = 1;
         let weightOfWord2 = 1;
