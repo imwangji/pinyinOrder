@@ -101,7 +101,9 @@ function _reverse(string) {
     arr.reverse();
     return arr.join("");
 }
-
+/**
+ * 比较两个word的第一个字的unicode
+ */
 function _compareCharCode(a, b) {
     if (a.charCodeAt(0) > b.charCodeAt(0)) {
         return 1;
@@ -140,15 +142,15 @@ var PinYinOrder = function () {
         key: "compareWord",
         value: function compareWord(word1, word2) {
             /**
-             * @description
-             * 根据拼音排序，比较两个单词，与compareInPinYin不同的是，本方法比较的是整个单词
-             * 把单词的每一个字的首字母拿出来进行比对，同音的情况，两个字的小于三个字
-             * @returns
-             * 如果word1排在word12前面，返回-1，反之返回1，相等返回0
-             * @example
-             * 曹山===曹珊===曹水（都是C,S）
-             * 曹山<曹山山（两个字的小于三个字的）
-             */
+            * @description
+            * 根据拼音排序，比较两个单词，与compareInPinYin不同的是，本方法比较的是整个单词
+            * 把单词的每一个字的首字母拿出来进行比对，同音的情况，两个字的小于三个字
+            * @returns
+            * 如果word1排在word12前面，返回-1，反之返回1，相等返回0
+            * @example
+            * 曹山===曹珊===曹水（都是C,S）
+            * 曹山<曹山山（两个字的小于三个字的）
+            */
             if (!word1) {
                 return 1;
             }
@@ -162,14 +164,19 @@ var PinYinOrder = function () {
             }
 
             var weightMagicNumber = 100; //权重值
-            var weightOfWord1 = 1;
-            var weightOfWord2 = 1;
+            var weightOfWord1 = 1; //第一个词的初始权重值
+            var weightOfWord2 = 1; //第二个词的初始权重值
+
+            //传入的两个字符串长度不同，将i设置为最长的那个数字
             var i = word1.length > word2.length ? word1.length : word2.length;
+
             var returnValueBetweenFirstCharactor = this.compareInPinYin(word1[0], word2[0]);
+
             if (returnValueBetweenFirstCharactor != 0) {
                 //如果第一个字不相等，则直接返回结果
                 return returnValueBetweenFirstCharactor;
             }
+
             for (var j = 0; j < i; j++) {
                 if (!word1[j]) {
                     weightOfWord2 += weightOfWord2 + Math.pow(weightMagicNumber, i - j);
@@ -202,12 +209,13 @@ var PinYinOrder = function () {
              * 根据拼音排序，比较两个字符串或者字符，如果是字符串，只比较第一个字符；
              * 英文字符排在汉字前面,
              * 特殊字符排在最后
+             * 1.6新增 对数字进行对比    数字<英文<汉字<特殊字符
              * @returns
              * 如果charactor1排在charactor2前面，返回-1，反之返回1，相等返回0
              */
 
-            var sourceCharactorPinyin = this.getCharactorFirstPinYinWorld(charactor1);
-            var targetCharactorPinyin = this.getCharactorFirstPinYinWorld(charactor2);
+            var sourceCharactorPinyin = this.getCharactorFirstPinYinWord(charactor1);
+            var targetCharactorPinyin = this.getCharactorFirstPinYinWord(charactor2);
 
             if (sourceCharactorPinyin && targetCharactorPinyin) {
                 var pinyinCompareResult = _compareCharactor(sourceCharactorPinyin, targetCharactorPinyin);
@@ -224,8 +232,8 @@ var PinYinOrder = function () {
             }
         }
     }, {
-        key: "getCharactorFirstPinYinWorld",
-        value: function getCharactorFirstPinYinWorld(charactor) {
+        key: "getCharactorFirstPinYinWord",
+        value: function getCharactorFirstPinYinWord(charactor) {
             /**@description
              * 得到一个字符的拼音首字母
              * @param 字符串或者字
@@ -240,28 +248,29 @@ var PinYinOrder = function () {
                 }
             }
 
-            if ("A" <= charactor[0] && charactor[0] <= "Z" || "a" <= charactor[0] && charactor[0] <= "z") {
+            if ("A" <= charactor[0] && charactor[0] <= "Z" || "a" <= charactor[0] && charactor[0] <= "z" || "0" <= charactor[0] && charactor[0] <= "9") {
                 return charactor[0].toUpperCase();
             }
 
             return false;
         }
+        /**
+         * checkCharactorIsChinese
+         * @description 
+         * 输入一个参数，返回这个参数的第一个字符是不是汉字
+         * 
+         * 注意：只判断第一个字符。
+         * “I am 超级玛丽”，返回false，第一个字符为“I”
+         * “超级玛丽 is me”，返回true，第一个字符为“超”
+         */
+
     }, {
         key: "checkCharactorIsChinese",
-        value: function checkCharactorIsChinese(input) {
-            /**
-             * @description 
-             * 输入一个参数，返回这个参数的第一个字符是不是汉字
-             * 
-             * 注意：只判断第一个字符。
-             * “I am 超级玛丽”，返回false，第一个字符为“I”
-             * “超级玛丽 is me”，返回true，第一个字符为“超”
-             */
-
+        value: function checkCharactorIsChinese(word) {
             //在unicode编码中，汉字的第一个字符位置是0x4e00，转换为十进制是19968
             //最后一个汉字位置是0x9fff，转换为十进制是40959
             //由于操作系统字库的原因，其实从19968到40959之间有很多字是显示不出来的，会显示为一个方块
-            var charactor = input.toString();
+            var charactor = word.toString();
             return 19968 <= charactor.charCodeAt(0) && charactor.charCodeAt(0) <= 40959;
         }
     }]);
