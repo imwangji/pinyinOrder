@@ -1,4 +1,7 @@
 # 更新
+## 1.6.1
+> 数字可以排序了,数字<英文<汉字<特殊字符
+之前的 `getCharactorFirstPinYinWorld`方法被删除，改成了`getCharactorFirstPinYinWord`方法，没错，我之前拼写错误了……
 ## 1.5.1
 > 修复了两个bug
 ## 1.3
