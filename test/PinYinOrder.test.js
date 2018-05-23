@@ -51,7 +51,7 @@ describe('测试拼音排序', () => {
     });
 
 
-    /**getCharactorFirstPinYinWorld
+    /**getCharactorFirstPinYinWord
         * @param 字符串
         * 查询一个字的拼音首字母：
         * 如果是汉字，返回拼音首字母，
@@ -59,23 +59,24 @@ describe('测试拼音排序', () => {
         * 如果是特殊字符，返回false
         */
 
-    describe('getCharactorFirstPinYinWorld方法', () => {
+    describe('getCharactorFirstPinYinWord方法', () => {
         it('汉字词或者字，可以正确返回其首个字的拼音首字母', () => {
-            expect(pinyinOrder.getCharactorFirstPinYinWorld("我是天才")).toBe("w");
-            expect(pinyinOrder.getCharactorFirstPinYinWorld("爱")).toBe("a");
+            expect(pinyinOrder.getCharactorFirstPinYinWord("我是天才")).toBe("w");
+            expect(pinyinOrder.getCharactorFirstPinYinWord("爱")).toBe("a");
         });
         it('英文字母或者词，返回首字母的大写形式', () => {
-            expect(pinyinOrder.getCharactorFirstPinYinWorld("love")).toBe("L");
-            expect(pinyinOrder.getCharactorFirstPinYinWorld("system manager")).toBe("S");
+            expect(pinyinOrder.getCharactorFirstPinYinWord("love")).toBe("L");
+            expect(pinyinOrder.getCharactorFirstPinYinWord("system manager")).toBe("S");
         });
-        it('数字或者特殊符号，返回false', () => {
-            expect(pinyinOrder.getCharactorFirstPinYinWorld("2")).toBe(false);
-            expect(pinyinOrder.getCharactorFirstPinYinWorld("9829")).toBe(false);
-            expect(pinyinOrder.getCharactorFirstPinYinWorld("*&&……")).toBe(false);
-            expect(pinyinOrder.getCharactorFirstPinYinWorld("！")).toBe(false);
-            expect(pinyinOrder.getCharactorFirstPinYinWorld(2)).toBe(false);
-            expect(pinyinOrder.getCharactorFirstPinYinWorld(233)).toBe(false);
-
+        it('特殊符号，返回false', () => {
+            expect(pinyinOrder.getCharactorFirstPinYinWord("*&&……")).toBe(false);
+            expect(pinyinOrder.getCharactorFirstPinYinWord("！")).toBe(false);
+            expect(pinyinOrder.getCharactorFirstPinYinWord(2)).toBe(false);
+            expect(pinyinOrder.getCharactorFirstPinYinWord(233)).toBe(false);
+        });
+        it('数字开头可以返回一个数字的字符串', () => {
+            expect(pinyinOrder.getCharactorFirstPinYinWord("2哈哈哈")).toBe("2");
+            expect(pinyinOrder.getCharactorFirstPinYinWord("3")).toBe("3");
         });
     });
 
@@ -113,7 +114,6 @@ describe('测试拼音排序', () => {
             expect(pinyinOrder.compareWord("资源池", "资源啊")).toBe(1);
             expect(pinyinOrder.compareWord("admin", "Dashboard")).toBe(-1);
             expect(pinyinOrder.compareWord("系统管理员", "末位资源筛选")).toBe(1);
-
         });
     });
 
@@ -143,6 +143,68 @@ describe('测试拼音排序', () => {
             var s = "Dashboard（部门），Dashboard（平台），标签编辑，操作历史查看，废标，废标审核，公告管理，供应商V码编辑，供应商冻结/解冻，供应商淘汰（部门），供应商淘汰（平台），供应商移出（部门），框架合同发起（模型），末位资源筛选，评标进度查看，启动评价，投标明细查看，推送法务，系统管理员，议价，招标报表查看（部门），招标报表查看（平台），招标报表导出，招标报告下载，招标创建，中标结果二审，中标结果发布，中标结果一审，招标交互信息查看，招标交互信息发送，招标交互信息公开，招标列表查看，招标审核，招标详情查看，招标重启，资源报表查看（部门），资源报表查看（平台），资源报表导出，资源分类修改，资源列表查看（部门），资源列表查看（平台），资源入驻审核，资源详情查看";    
             var arr = s.split("，");
 
+        });
+    });
+
+    describe('getCharactorFirstPinYinWord方法', () => {
+        let pinyinOrder;
+        beforeEach(function () {
+            pinyinOrder = new PinYinOrder();
+        })
+        it('可以正确得到数字开头的词', () => {
+            const first = "0haha";
+            const second = "1haha";
+            expect(pinyinOrder.getCharactorFirstPinYinWord(first)).toBe("0");
+            expect(pinyinOrder.getCharactorFirstPinYinWord(second)).toBe("1");
+        });
+    });
+
+    xdescribe('数字开头的排序', () => {
+        let pinyinOrder;
+        beforeEach(function () {
+            pinyinOrder = new PinYinOrder();
+        })
+        it('0开头的排在1开头之前以此类推', () => {
+            expect(pinyinOrder.compareWord("0k","12")).toBe(-1);
+            expect(pinyinOrder.compareWord("0个小矮人","1个白雪公主")).toBe(-1);
+            expect(pinyinOrder.compareWord("9个小矮人","1个白雪公主")).toBe(1);
+            expect(pinyinOrder.compareWord("1个小矮人","1个白雪公主")).toBe(1);
+        });
+        it('数字排在英文之前', () => {
+            expect(pinyinOrder.compareWord("0k","ang")).toBe(-1);            
+            expect(pinyinOrder.compareWord("1k","eng")).toBe(-1);            
+            expect(pinyinOrder.compareWord("2k","eng")).toBe(-1);            
+            expect(pinyinOrder.compareWord("3k","eng")).toBe(-1);            
+            expect(pinyinOrder.compareWord("4k","eng")).toBe(-1);            
+            expect(pinyinOrder.compareWord("5k","eng")).toBe(-1);            
+            expect(pinyinOrder.compareWord("6k","eng")).toBe(-1);            
+            expect(pinyinOrder.compareWord("7k","eng")).toBe(-1);            
+            expect(pinyinOrder.compareWord("8k","eng")).toBe(-1);            
+            expect(pinyinOrder.compareWord("9k","eng")).toBe(-1);            
+        });
+        it('数字排在中文之前', () => {
+            expect(pinyinOrder.compareWord("0k","昂")).toBe(-1);            
+            expect(pinyinOrder.compareWord("1k","昂")).toBe(-1);            
+            expect(pinyinOrder.compareWord("2k","昂")).toBe(-1);            
+            expect(pinyinOrder.compareWord("3k","昂")).toBe(-1);            
+            expect(pinyinOrder.compareWord("4k","昂")).toBe(-1);            
+            expect(pinyinOrder.compareWord("5k","昂")).toBe(-1);            
+            expect(pinyinOrder.compareWord("6k","昂")).toBe(-1);            
+            expect(pinyinOrder.compareWord("7k","昂")).toBe(-1);            
+            expect(pinyinOrder.compareWord("8k","昂")).toBe(-1);            
+            expect(pinyinOrder.compareWord("9k","昂")).toBe(-1);            
+        });
+        it('数字排在特殊符号之前', () => {
+            expect(pinyinOrder.compareWord("0k","！")).toBe(-1);            
+            expect(pinyinOrder.compareWord("1k","！")).toBe(-1);            
+            expect(pinyinOrder.compareWord("2k","！")).toBe(-1);            
+            expect(pinyinOrder.compareWord("3k","！")).toBe(-1);            
+            expect(pinyinOrder.compareWord("4k","！")).toBe(-1);            
+            expect(pinyinOrder.compareWord("5k","！")).toBe(-1);            
+            expect(pinyinOrder.compareWord("6k","！")).toBe(-1);            
+            expect(pinyinOrder.compareWord("7k","！")).toBe(-1);            
+            expect(pinyinOrder.compareWord("8k","！")).toBe(-1);            
+            expect(pinyinOrder.compareWord("9k","！")).toBe(-1);            
         });
     });
 });
