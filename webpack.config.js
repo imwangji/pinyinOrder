@@ -4,7 +4,8 @@ module.exports={
     entry:"./src/PinYinOrder.js",
     output:{
         path:path.resolve('./dist'),
-        filename:'PinYinOrder.bundle.js'
+        filename:'PinYinOrder.bundle.js',
+        libraryTarget: 'umd'
     },
     module:{
         rules:[
