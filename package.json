@@ -2,7 +2,7 @@
   "name": "pinyin-order",
   "version": "1.6.1",
   "description": "按照拼音首字母排序的js库",
-  "main": "index.js",
+  "main": "dist/PinYinOrder.bundle.js",
   "scripts": {
     "test": "node jasmine.run.js",
     "build": "webpack"
